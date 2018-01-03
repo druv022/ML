@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 import generate
 import polynomial_regression
+import validation
 
 class plot_graph():
     """description of class"""
@@ -33,6 +34,24 @@ class plot_graph():
             plt.text(1, 1, 'M =' + str(i) , ha='center', va='center',size=8, alpha=.5)
 
         plt.show()
+
+    def plot_poly_reg_best(self):
+        z = 2 * np.pi * np.linspace(0,1,10000)
+        N = 10
+        gen = generate.generate()
+        x,t = gen.generate_cosine(N)
+        valid = validation.validation()
+        best_m, best_lambda = valid.find_best_m_and_lambda(x,t,N,k=5)
+        poly_reg = polynomial_regression.polynomial_regression()
+        w, phi = poly_reg.fit_polynomial(x,t,best_m,lambda_reg = best_lambda)
+        phi_ = poly_reg.designMatrix(z, best_m)
+        y = phi_.dot(w)
+
+        plt.plot(z, np.cos(z))
+        plt.plot(x,t,'o')
+        plt.plot(z,y)
+        plt.show()
+
 
 
 
